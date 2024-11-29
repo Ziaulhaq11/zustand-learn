@@ -1,39 +1,25 @@
-import { useEffect } from "react";
-import "./App.css";
-import { useCounterStore } from "./store";
+import CountProvider, { useCountStore } from "./CountProvider";
 
-const logStore = () => {
-  const count = useCounterStore.getState().count;
-  console.log(count);
+type AppProps = {
+  initialCount?: number;
 };
 
-const changeCount = () => {
-  useCounterStore.setState({ count: 1 });
-};
-
-function App() {
-  const count = useCounterStore((state) => state.count);
-  useEffect(() => {
-    logStore();
-    changeCount();
-  }, []);
-  return <OtherComponent count={count} />;
+export default function App({ initialCount = 5 }: AppProps) {
+  return (
+    <CountProvider initialCount={initialCount}>
+      <h1 className="text-2xl font-bold">Hello world</h1>
+      <Component />
+    </CountProvider>
+  );
 }
 
-const OtherComponent = ({ count }: { count: number }) => {
-  const increment = useCounterStore((state) => state.increment);
-  const incrementAsync = useCounterStore((state) => state.incrementAsync);
-  const decrement = useCounterStore((state) => state.decrement);
+function Component() {
+  const count = useCountStore((state) => state.count);
+  const increment = useCountStore((state) => state.inc);
   return (
     <div>
-      <div>{count}</div>
-      <div>
-        <button onClick={increment}>Increment</button>
-        <button onClick={incrementAsync}>IncrementAsync</button>
-        <button onClick={decrement}>Decrement</button>
-      </div>
+      <h1>{count}</h1>
+      <button onClick={increment}>Increment</button>
     </div>
   );
-};
-
-export default App;
+}
